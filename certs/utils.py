@@ -15,7 +15,10 @@ from urllib3.contrib import pyopenssl as reqs
 # 从域名或pem文件解析SSL证书，获取签发信息
 def load_certificate(method, obj):
     if method == 0:
-        cert = reqs.ssl.get_server_certificate((obj, 443))
+        #cert = reqs.ssl.get_server_certificate((obj, 443))
+        conn = reqs.ssl.create_connection((obj, 443))
+        sock = reqs.ssl.SSLContext(reqs.ssl.PROTOCOL_SSLv23).wrap_socket(conn, server_hostname=obj)
+        cert = reqs.ssl.DER_cert_to_PEM_cert(sock.getpeercert(True))
     elif method == 1:
         cert = obj
     else:
